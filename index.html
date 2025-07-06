@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Rowerowe Trasy</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; background: #f2f2f2; }
+    h1 { color: #2c3e50; }
+    .trasa { background: white; padding: 1rem; margin-bottom: 1rem; border-radius: 8px; box-shadow: 0 0 5px #ccc; }
+    iframe { width: 100%; height: 300px; border: none; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>🚴‍♂️ Rowerowe trasy</h1>
+
+  <form id="trasaForm">
+    <input type="text" placeholder="Nazwa trasy" id="nazwa" required /><br><br>
+    <textarea placeholder="Opis trasy" id="opis" required></textarea><br><br>
+    <input type="text" placeholder="Dystans (km)" id="dystans" required /><br><br>
+    <input type="text" placeholder="Czas (min)" id="czas" required /><br><br>
+    <input type="text" placeholder="Link do mapy (np. Google Maps)" id="mapa" required /><br><br>
+    <button type="submit">Dodaj trasę</button>
+  </form>
+
+  <hr>
+
+  <div id="listaTras"></div>
+
+  <script>
+    const form = document.getElementById('trasaForm');
+    const lista = document.getElementById('listaTras');
+
+    const trasy = JSON.parse(localStorage.getItem('trasy') || '[]');
+
+    const render = () => {
+      lista.innerHTML = '';
+      trasy.forEach((t, i) => {
+        const div = document.createElement('div');
+        div.className = 'trasa';
+        div.innerHTML = `<h2>${t.nazwa}</h2><p>${t.opis}</p><p>🚴 ${t.dystans} km | ⏱ ${t.czas} min</p><iframe src="${t.mapa}" loading="lazy"></iframe>`;
+        lista.appendChild(div);
+      });
+    };
+
+    form.onsubmit = (e) => {
+      e.preventDefault();
+      const nowa = {
+        nazwa: nazwa.value,
+        opis: opis.value,
+        dystans: dystans.value,
+        czas: czas.value,
+        mapa: mapa.value
+      };
+      trasy.push(nowa);
+      localStorage.setItem('trasy', JSON.stringify(trasy));
+      form.reset();
+      render();
+    };
+
+    render();
+  </script>
+</body>
+</html>
